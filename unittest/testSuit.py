@@ -1,5 +1,5 @@
 import unittest
-from testmathfunc import TestMathFunc
+from unittest.testmathfunc import TestMathFunc
 
 
 if __name__ == "__main__":
