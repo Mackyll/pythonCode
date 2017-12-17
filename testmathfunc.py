@@ -22,4 +22,19 @@ class TestMathFunc(unittest.TestCase):
         """Test method divide(a, b)"""
         self.assertEqual(2, divide(6, 3))
         self.assertEqual(2.5, divide(5, 2))
-
+#每一个case执行之前都会调用
+    def setUp(self):
+        print("every case begin init")
+        pass
+#每一个case执行完毕都会调用
+    def tearDown(self):
+        print("every case exit process")
+#所有case执行之前调用，只调用一次
+    @classmethod
+    def setUpClass(cls):
+        pass
+#所有case执行之后都会调用，只调用一次
+    @classmethod
+    def tearDownClass(cls):
+        print("all case done exit process")
+        pass
