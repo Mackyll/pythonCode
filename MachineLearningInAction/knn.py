@@ -1,4 +1,5 @@
 from numpy import *
+from os import listdir
 import operator
 import matplotlib.pyplot as plt
 
@@ -88,6 +89,45 @@ def classifyPerson():
     inArr = array([ffMiles, persentTats, iceCream])
     classresult = classify0((inArr - minVals) / ranges, normMat, datingLabels, 3)
     print("you will probaly like this person:", resultList[classresult - 1])
+
+
+# 将图像转换为向量
+def img2vector(filename):
+    returnvec = zeros((1, 1024))
+    fr = open(filename)
+    for i in range(32):
+        lineStr = fr.readline()
+        for j in range(32):
+            returnvec[0, 32 * i + j] = int(lineStr[j])
+    return returnvec
+
+
+# 图像识别就是将整个文件当作一个向量来测试和样本数据的距离
+def handingwritingClassTest():
+    hwlabels = []
+    trainingFileList = listdir("trainingDigits")
+    m = len(trainingFileList)
+    trainingMat = zeros((m, 1024))
+    for i in range(m):
+        filenamestr = trainingFileList[i]
+        fileStr = filenamestr.split('.')[0]
+        classNumStr = int(fileStr.split('_')[0])
+        hwlabels.append(classNumStr)
+        trainingMat[i, :] = img2vector('trainingDigits/%s' % filenamestr)
+    testFileList = listdir("testDigits")
+    errorCount = 0.0
+    mTest = len(testFileList)
+    for i in range(mTest):
+        filenamestr = testFileList[i]
+        fileStr = filenamestr.split('.')[0]
+        classNumStr = int(fileStr.split('_')[0])
+        vectorUnderTest = img2vector("testDigits/%s" % filenamestr)
+        classifierResult = classify0(vectorUnderTest, trainingMat, hwlabels, 3)
+        print("the classifier came back with:%d,the real answer is:%d" % classifierResult, classNumStr)
+        if (classifierResult != classNumStr):
+            errorCount += 1.0
+    print("\nthe total number of error is:%d" % errorCount)
+    print("\nthe total error rate is:%f" % (errorCount / float(mTest)))
 
 
 if __name__ == "__main__":
