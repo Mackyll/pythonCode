@@ -179,6 +179,38 @@ def createPlot(inTree):
     plt.show()
 
 
+def classify(inputTree, featLabels, testVec):
+    firstStr = list(inputTree.keys())[0]
+    secondDict = inputTree[firstStr]
+    featIndex = featLabels.index(firstStr)
+    key = testVec[featIndex]
+    valueOfFeat = secondDict[key]
+    if isinstance(valueOfFeat, dict):
+        classLabel = classify(valueOfFeat, featLabels, testVec)
+    else:
+        classLabel = valueOfFeat
+    return classLabel
+
+
+def storeTree(inputTree, filename):
+    # pickle可以序列化对象
+    import pickle
+    fw = open(filename, 'w')
+    pickle.dump(inputTree, fw)
+    fw.close()
+
+
+def grabTree(filename):
+    import pickle
+    fr = open(filename)
+    #从文件中反序列化对象
+    return pickle.load(fr)
+
+
 if __name__ == '__main__':
-    myTree = retrieveTree(0)
-    createPlot(myTree)
+    fr=open("lenses.txt")
+    lenses=[inst.strip().split('\t') for inst in fr.readlines()]
+    lenseLabels=["age","prescript","astigmatic","tearRats"]
+    lensesTree=createTree(lenses,lenseLabels)
+    print(lensesTree)
+    createPlot(lensesTree)
