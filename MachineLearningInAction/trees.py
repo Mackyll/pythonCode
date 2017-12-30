@@ -68,9 +68,33 @@ def majorityCnt(classList):
     return sortedClassCount[0][0]
 
 
+# 构建的决策树是按照最大信息增益来构建的
+# 首先找到最大信息增益的特征，然后按照特征划分之后，再从子集里面去查找最大信息增益的特征，再划分，以此类推
+def createTree(dataSet, labels):
+    classList = [example[-1] for example in dataSet]
+    if classList.count(classList[0]) == len(classList):
+        return classList[0]
+    if len(dataSet[0]) == 1:
+        return majorityCnt(classList)
+    # 这里首先查找最大的信息增益的特征
+    bestFeat = chooseBestFeatureToSplit(dataSet)
+    # 找到最好特征集的label
+    bestFeatLabel = labels[bestFeat]
+    # 构建该label的一个子树
+    myTree = {bestFeatLabel: {}}
+    del (labels[bestFeat])
+    # 找到最好划分的所有值
+    featValues = [example[bestFeat] for example in dataSet]
+    # 找到该划分的唯一值
+    uniqueVals = set(featValues)
+    for value in uniqueVals:
+        subLabels = labels[:]
+        # 递归构建该子树的子集
+        myTree[bestFeatLabel][value] = createTree(splitDataSet(dataSet, bestFeat, value), subLabels)
+    return myTree
+
 
 if __name__ == '__main__':
     myDat, label = createDataSet()
-    featList = [example[0] for example in myDat]
-    uniqueVals = set(featList)
-    print(calcShannonEnt(myDat))
+    myTree = createTree(myDat, label)
+    print(myTree)
