@@ -56,7 +56,10 @@ def trainNB0(trainMatrix, trainCategory):
     return p0Vect, p1Vect, pAbusive
 
 
+# 参考博客http://blog.csdn.net/amds123/article/details/70173402
+# 分别计算该数据是属于类1和类0的概率，然后取一个概率最大的作为最后的类别
 def classifyNB(vec2Classify, p0Vec, p1Vec, pClass1):
+    #最后不除每个类别的总概率是因为类1和类0的分母都是相同的，所以直接比较分子就可以了
     p1 = sum(vec2Classify * p1Vec) + log(pClass1)  # element-wise mult
     p0 = sum(vec2Classify * p0Vec) + log(1.0 - pClass1)
     if p1 > p0:
